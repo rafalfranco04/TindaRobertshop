@@ -1,0 +1,415 @@
+body{
+margin:0;
+font-family:Arial;
+background:#f2f2f2;
+}
+
+header{
+background: rgba(255, 0, 0, 0.8);
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 20px;
+position:sticky;
+z-index:1000;
+transition:0.3s;
+top:0;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:22px;
+    font-weight:bold;
+    margin-left: 20%;
+}
+
+.logo img{
+    width:60px;
+    height:60px;
+    border-radius:15%;
+    object-fit:cover;
+}
+
+
+.menu a{
+color:rgb(255, 255, 255);
+margin:0 15px;
+text-decoration:none;
+font-weight:bold;
+}
+
+.carritoIcono img{
+width:30px;
+cursor:pointer;
+margin-right: 600px;
+}
+
+
+/* Submenu */
+
+.submenu{
+display:flex;
+gap:15px;
+padding:10px;
+justify-content:center;
+}
+
+.submenu_2{ 
+    width: 120px;
+    padding: 10px;
+    border-radius: 40px;
+    background-color: #ffe208;
+    border: none;
+    color: rgb(0, 0, 0);
+    font-size: 15px;
+}
+
+.submenu_2:hover{
+    background-color:#1cc4f8;
+    transition:all 0.3s ease;
+    color: white;
+}
+/* slaider */
+
+.slide-box{
+    width: 1280px;
+    height: auto;
+    margin: 50px auto 0;
+    overflow: hidden;
+    position: center;
+
+
+}
+
+.slide-box ul{
+    display: flex;
+    padding: 0;
+    width: 400%;
+    animation: slide 20s infinite alternate ease-in-out;
+
+}
+.slide-box li{
+   width: 100%;
+   list-style: none;
+   position: relative;
+}
+
+.texto{
+    position: absolute;
+    text-align: center;
+    padding: 0 250px;
+    top: 250px;
+    color: whitesmoke;
+}
+
+.slide-box img{
+   width: 100%;
+   height: 500px;
+}
+@keyframes slide{
+    0%{margin-left: 0;}
+    20%{margin-left: 0;}
+
+    25%{margin-left: -100%;}
+    45%{margin-left: -100%;}
+
+    50%{margin-left: -200%;}
+    70%{margin-left: -100%;}
+
+    75%{margin-left: -300%;}
+    100%{margin-left: -300%;}
+
+}
+
+/* productos y tarjetas*/
+
+.productos{
+display:grid;
+grid-template-columns:repeat(5, 260px);
+gap:30px;
+padding:40px 0;
+justify-content:center;
+max-width:1100px;
+margin:auto;
+}
+
+/* Responsive */
+@media(max-width:1000px){
+.productos{
+grid-template-columns:repeat(2, 240px);
+}
+}
+
+@media(max-width:550px){
+.productos{
+grid-template-columns:repeat(1, 240px);
+}
+}
+
+.card{
+margin:5px;
+background:white;
+padding:20px;
+border-radius:12px;
+text-align:center;
+width:240px;
+height:380px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* IMAGEN */
+.card img{
+width:100%;
+height:140px;
+object-fit:contain;
+margin-bottom:10px;
+}
+
+/* TITULO */
+.card h3{
+min-height:45px;
+margin:5px 0;
+}
+
+/* DESCRIPCION */
+.card p{
+min-height:40px;
+font-size:14px;
+color:#444;
+margin:5px 0;
+}
+
+/* PRECIO */
+.card strong{
+font-size:18px;
+margin-top:5px;
+}
+
+.btAgregar{
+    background-color: #ffe208;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    font-size: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.btAgregar:hover{
+    background-color:#1cc4f8;
+    transition:all 0.3s ease;
+    color: white;
+}
+
+.btmas-meno{
+    padding:3px 5px; 
+    cursor:pointer; 
+    border-radius: 50%; 
+    border: none; 
+    background-color: #ffe208 ;
+}
+.btmas-meno:hover{
+    background-color:#fffb00;
+    transition:all 0.3s ease;
+    color: white;
+}
+
+/* pantalla trasparente donde sale el pedido*/
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modalContenido{
+background:white;
+padding:20px;
+width:90%;
+max-width:400px;
+border-radius:10px;
+max-height:90vh;
+overflow:auto;
+position:relative;
+}
+
+.cerrar{
+position:absolute;
+right:15px;
+top:10px;
+font-size:20px;
+cursor:pointer;
+}
+
+input,select{
+width:100%;
+padding:8px;
+margin-top:8px;
+}
+
+.btnWhats{
+background:#25D366;
+color:white;
+width:100%;
+padding:12px;
+margin-top:15px;
+border:none;
+font-size:18px;
+cursor:pointer;
+}
+
+.toast{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#28a745;
+color:white;
+padding:12px 18px;
+border-radius:8px;
+display:none;
+font-weight:bold;
+}
+
+.Barra-inferio{
+height: 500px;
+background: rgba(255, 0, 0, 0.8);
+z-index:1000;
+transition:0.3s;
+top:0;
+
+}
+
+.contenedor{
+    max-width: 1000px; /* controla ancho */
+    margin: auto; /* centra */
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+/* COLUMNAS */
+.columna{
+    flex: 1;
+}
+/* LINEAS DIVISORAS */
+.columna:not(:last-child){
+    border-right: 2px solid red;
+    padding-right: 20px;
+}
+.Col-h2-p{
+    color: rgb(247, 247, 247);
+    margin-top: 50px;
+
+}
+.p-c{
+    color: rgb(247, 247, 247);
+    text-decoration: none;
+    cursor: pointer;
+  transition: 0.3s;
+
+}
+
+.p-c:hover{
+    color: #f4c542; /* color cuando pasas el mouse */
+  text-decoration: underline;
+
+}
+
+
+
+
+hr{
+    width: 1390px;
+border:none;
+height:2px;
+background:#ccc;
+margin:20px auto;
+}
+.derechos{
+    color: #b0b0b0;
+    text-align: center;
+    font-size: 15px;
+    font-family:sans-serif;
+}
+
+.contenedor-principal{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:40px;
+    padding:40px;
+    flex-wrap:wrap;
+}
+
+/* Imagen izquierda */
+.imagen-telefono img{
+width:400px;
+height:800px;
+object-fit:cover;
+
+}
+
+/* Texto derecha */
+.info-telefono{
+    max-width:400px;
+}
+
+.titulo-telefono{
+    font-size:28px;
+    margin-bottom:15px;
+}
+
+/* Botón rojo */
+.boton-rojo{
+    margin-top:15px;
+    padding:12px 60px;
+    background:red;
+    color:white;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.boton-rojo:hover{
+    background:#1cc4f8;
+    color: white;
+}
+
+/* 📱 Responsive celular */
+@media (max-width:768px){
+
+    .contenedor-principal{
+        flex-direction:column;
+        text-align:center;
+    }
+
+}
+/* stilos de fieles */
+.fieles-p{
+    text-align:justify;
+    padding:10px;
+    letter-spacing: 1px;
+}
+
+.in-files{
+    height: 25px;
+    border-radius: 10px;
+    border: none
+
+
+     
+
+}
