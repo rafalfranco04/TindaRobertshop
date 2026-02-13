@@ -19,6 +19,11 @@
     
 </div>
 
+<div class="contenedor-buscador">
+<input type="text" id="buscador" placeholder="Buscar producto..." onkeyup="buscarProducto()">
+</div>
+
+
 <div class="submenu">
 <button class="submenu_2" onclick="filtrar('cerveza')">Cervezas</button>
 <button class="submenu_2" onclick="filtrar('licor')">Licores</button>
@@ -75,12 +80,14 @@
 <input id="telefono" placeholder="Teléfono">
 
 <select id="envio" onchange="mostrarCarrito()">
-<option value="2">La Arena - $2</option>
-<option value="3">Chitré - $3</option>
+<option value="2">La Arena, Via pese centro - $2</option>
+<option value="3">Chitré, Monagrillo, llano bonito - $3</option>
 <option value="5">La Villa Centro - $5</option>
+<option value="6">Parita Centro - $5</option>
 </select>
+<input id="ubicasion-des" placeholder="Describe tu Ubicación">
 
-<button onclick="obtenerUbicacion()">Capturar Ubicación</button>
+<button class="caturar-bt" onclick="obtenerUbicacion()">Capturar Ubicación</button>
 
 <select id="pago">
 <option>Yappy</option>
