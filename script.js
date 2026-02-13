@@ -110,6 +110,19 @@ let lista = productos.filter(p=>p.categoria===cat);
 mostrarProductos(lista);
 }
 
+function buscarProducto(){
+
+let texto = document.getElementById("buscador").value.toLowerCase();
+
+let filtrados = productos.filter(p =>
+p.nombre.toLowerCase().includes(texto)
+);
+
+mostrarProductos(filtrados);
+
+}
+
+
 mostrarProductos(productos);
 
 /* MODAL */
@@ -144,11 +157,11 @@ subtotal+=p.precio*p.cantidad;
 div.innerHTML+=`
 <p>
 ${p.nombre}
-<button onclick="cambiarCarrito(${index},-1)">➖</button>
+<button class="btmasMenos-pantalla" onclick="cambiarCarrito(${index},-1)">➖</button>
 ${p.cantidad}
-<button onclick="cambiarCarrito(${index},1)">➕</button>
+<button class="btmasMenos-pantalla" onclick="cambiarCarrito(${index},1)">➕</button>
 = $${(p.precio*p.cantidad).toFixed(2)}
-<button onclick="eliminarProducto(${index})">🗑</button>
+<button class="bt-eliminar" onclick="eliminarProducto(${index})">🗑️</button>
 </p>
 `;
 });
@@ -189,6 +202,7 @@ return;
 let nombre=document.getElementById("nombre").value;
 let tel=document.getElementById("telefono").value;
 let envio=parseFloat(document.getElementById("envio").value);
+let ubicacion=parseFloat(document.getElementById("ubicasion-des").value);
 let pago=document.getElementById("pago").value;
 
 let mensaje="🛒 NUEVO PEDIDO\n\n";
@@ -196,6 +210,7 @@ let mensaje="🛒 NUEVO PEDIDO\n\n";
 mensaje+=`Cliente: ${nombre}\n`;
 mensaje+=`Teléfono: ${tel}\n`;
 mensaje+=`Ubicación: ${ubicacionCliente}\n\n`;
+mensaje+=`Ubicación: ${ubicacion}\n\n`;
 
 mensaje+="Productos:\n";
 
