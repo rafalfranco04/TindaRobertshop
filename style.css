@@ -1,363 +1,694 @@
-const productos = [
-{nombre:"Soberna Botella",precio:12.00,categoria:"cerveza",img:"img/cervesas/soberana.jpeg",desc:"Caja de 24 unidades de botella."},
-{nombre:"Panama Ligth Botella",precio:13.50,categoria:"cerveza",img:"img/cervesas/panama-lithe.png",desc:"Caja de 24 unidades de botella."},
-{nombre:"Atlas Manga Larga",precio:18.00,categoria:"cerveza",img:"img/cervesas/atlas.png",desc:"Caja de 24 unidades de botella"},
-{nombre:"Bolboa roja Botellla",precio:16.00,categoria:"cerveza",img:"img/cervesas/balboa.png",desc:"Caja de 24 unidades de botella."},
-{nombre:"Cristal Botella",precio:14.00,categoria:"cerveza",img:"img/cervesas/cristal.jpeg",desc:"Caja de 24 unidades de botella."},
-{nombre:"Botella de Ron Abuelo",precio:10.00,categoria:"licor",img:"img/licores/botellea-ron.png",desc:"Botella de 750ml de ron abuelo."},
-{nombre:"Botella de Seco",precio:7.50,categoria:"licor",img:"img/licores/seco.jpg",desc:"Botella de 750ml de Seco Herrerano."},
-{nombre:"Antioqueño tapa Azul",precio:14.00,categoria:"licor",img:"img/licores/aguardiente.webp",desc:"Botella de 750ml de aguadiente antioqueño."},
-{nombre:"Botella de Old Parr",precio:22.00,categoria:"licor",img:"img/licores/oldparr.jpg",desc:"Botella de 750ml de Old Parr."},
-{nombre:"Botella de Vodka Smirnoff",precio:12.00,categoria:"licor",img:"img/licores/smirnoff.webp",desc:"Botella Vodka Smirnoff de 750ml."},
-{nombre:"Six pack Coors Lata",precio:4.50,categoria:"cerveza",img:"img/cervesas/coors.webp",desc:" 6 unidades de lata de 355ml."},
-{nombre:"Six pack de Corona",precio:7.50,categoria:"cerveza",img:"img/cervesas/corona.png",desc:" 6 unidades de lata de 355ml."},
-{nombre:"Smirnoff Manzana",precio:7.50,categoria:"cerveza",img:"img/cervesas/monzana.webp",desc:" 6 unidades de lata de 355ml."},
-{nombre:"1/4 de seco",precio:2.75,categoria:"licor",img:"img/licores/seco.jpg",desc:"Cuarto de seco Herrerano 250ml."},
-{nombre:"1/2 de Ron Abuelo",precio:5.50,categoria:"licor",img:"img/licores/botellea-ron.png",desc:"Media de ron abuelo de 350ml."},
-];
-
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-let ubicacionCliente = "";
-let cantidades = new Array(productos.length).fill(1);
-
-/* TOAST */
-function mostrarToast(){
-let t = document.getElementById("toast");
-t.style.display="block";
-setTimeout(()=> t.style.display="none",1500);
+body{
+margin:0;
+font-family:Arial;
+background:#f2f2f2;
 }
 
-/* PRODUCTOS */
-function mostrarProductos(lista){
-
-const cont = document.getElementById("productos");
-cont.innerHTML="";
-
-lista.forEach((p)=>{
-let i = productos.findIndex(prod=>prod.nombre===p.nombre);
-
-cont.innerHTML+=`
-<div class="card">
-<img src="${p.img}">
-<h3>${p.nombre}</h3>
-<p>${p.desc}</p>
-<p>$${p.precio}</p>
-
-<div class="cantidad">
-<button class="btmas-meno" onclick="cambiarCantidad(${i},-1)">➖</button>
-<span id="cant-${i}">${cantidades[i]}</span>
-<button class="btmas-meno" onclick="cambiarCantidad(${i},1)">➕</button>
-</div>
-
-<button class="btAgregar" onclick="agregar(${i})">Agregar</button>
-</div>
-`;
-});
+header{
+background: rgba(255, 0, 0, 0.8);
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 20px;
+position:sticky;
+z-index:1000;
+transition:0.3s;
+top:0;
 }
 
-function cambiarCantidad(i,v){
-cantidades[i]+=v;
-if(cantidades[i]<1) cantidades[i]=1;
-document.getElementById("cant-"+i).innerText=cantidades[i];
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:22px;
+    font-weight:bold;
+    margin-left: 20%;
 }
 
-function agregar(i){
-let p = productos[i];
-let cant = cantidades[i];
-let ex = carrito.find(x=>x.nombre===p.nombre);
-
-if(ex){
-ex.cantidad+=cant;
-}else{
-carrito.push({...p,cantidad:cant});
-}
-
-cantidades[i]=1;
-guardar();
-mostrarCarrito();
-mostrarProductos(productos);
-mostrarToast();
-}
-
-function guardar(){
-localStorage.setItem("carrito",JSON.stringify(carrito));
-}
-
-function eliminarProducto(index){
-carrito.splice(index,1);
-guardar();
-mostrarCarrito();
-}
-
-function cambiarCarrito(index,v){
-carrito[index].cantidad+=v;
-if(carrito[index].cantidad<=0){
-carrito.splice(index,1);
-}
-guardar();
-mostrarCarrito();
-}
-
-function filtrar(cat){
-let lista = productos.filter(p=>p.categoria===cat);
-mostrarProductos(lista);
-}
-
-function buscarProducto(){
-let texto = document.getElementById("buscador").value.toLowerCase();
-let filtrados = productos.filter(p =>
-p.nombre.toLowerCase().includes(texto)
-);
-mostrarProductos(filtrados);
-}
-
-mostrarProductos(productos);
-
-/* MODAL */
-function abrirCarrito(){
-document.getElementById("modalCarrito").style.display="flex";
-mostrarCarrito();
-}
-
-function cerrarCarrito(){
-document.getElementById("modalCarrito").style.display="none";
-}
-
-function cerrarFuera(e){
-if(e.target.id==="modalCarrito"){
-cerrarCarrito();
-}
-}
-
-/* MOSTRAR CARRITO */
-function mostrarCarrito(){
-
-let div=document.getElementById("listaCarrito");
-div.innerHTML="";
-
-let envio=parseFloat(document.getElementById("envio").value||0);
-let subtotal=0;
-
-carrito.forEach((p,index)=>{
-subtotal+=p.precio*p.cantidad;
-
-div.innerHTML+=`
-<p>
-${p.nombre}
-<button class="btmasMenos-pantalla" onclick="cambiarCarrito(${index},-1)">➖</button>
-${p.cantidad}
-<button class="btmasMenos-pantalla" onclick="cambiarCarrito(${index},1)">➕</button>
-= $${(p.precio*p.cantidad).toFixed(2)}
-<button class="bt-eliminar" onclick="eliminarProducto(${index})">🗑️</button>
-</p>
-`;
-});
-
-let total=subtotal+envio;
-
-document.getElementById("btnEnviar").innerText=
-`Enviar WhatsApp $${total.toFixed(2)}`;
-}
-
-/* UBICACION CORREGIDA */
-/* ========================= */
-/* ====== MAPA PRO ========= */
-/* ========================= */
-
-let map;
-let marker;
-let ubicacionSeleccionada = "";
-
-function abrirMapa(){
-
-// 🔥 Cierra carrito si está abierto
-cerrarCarrito();
-
-document.getElementById("modalMapa").style.display="flex";
-
-setTimeout(()=>{
-
-// 🔥 Evita que se cree varias veces
-if(!map){
-
-map = L.map('map').setView([7.9819, -80.4290], 15); // Chitré
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-maxZoom: 19,
-}).addTo(map);
-
-// 🔥 Click manual en mapa
-map.on('click', function(e){
-
-if(marker){
-map.removeLayer(marker);
-}
-
-marker = L.marker(e.latlng).addTo(map);
-
-ubicacionSeleccionada =
-`https://maps.google.com/?q=${e.latlng.lat},${e.latlng.lng}`;
-
-});
-
-}
-
-map.invalidateSize();
-
-},200);
-
-}
-
-function cerrarMapa(){
-document.getElementById("modalMapa").style.display="none";
+.logo img{
+    width:60px;
+    height:60px;
+    border-radius:15%;
+    object-fit:cover;
 }
 
 
-/* ===== BUSCADOR REAL ===== */
-
-function buscarDireccion(){
-
-let direccion =
-document.getElementById("buscarLugar").value;
-
-if(direccion.trim()===""){
-alert("Escribe una dirección");
-return;
+.menu a{
+color:rgb(255, 255, 255);
+margin:0 15px;
+text-decoration:none;
+font-weight:bold;
 }
 
-fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${direccion}`)
-.then(res=>res.json())
-.then(data=>{
-
-if(data.length===0){
-alert("No se encontró la dirección");
-return;
-}
-
-let lat = data[0].lat;
-let lon = data[0].lon;
-
-map.setView([lat, lon], 16);
-
-if(marker){
-map.removeLayer(marker);
-}
-
-marker = L.marker([lat, lon]).addTo(map);
-
-ubicacionSeleccionada =
-`https://maps.google.com/?q=${lat},${lon}`;
-
-});
-
+.carritoIcono img{
+width:30px;
+cursor:pointer;
+margin-right: 600px;
 }
 
 
-/* ===== BOTON GPS DENTRO DEL MAPA ===== */
+/* Submenu */
 
-function usarGPS(){
-
-navigator.geolocation.getCurrentPosition(
-pos=>{
-
-let lat = pos.coords.latitude;
-let lon = pos.coords.longitude;
-
-map.setView([lat, lon], 16);
-
-if(marker){
-map.removeLayer(marker);
+.submenu{
+display:flex;
+gap:15px;
+padding:10px;
+justify-content:center;
 }
 
-marker = L.marker([lat, lon]).addTo(map);
-
-ubicacionSeleccionada =
-`https://maps.google.com/?q=${lat},${lon}`;
-
-alert("Ubicación GPS detectada");
-
-},
-()=>{
-alert("No se pudo obtener el GPS");
-}
-);
-
+.submenu_2{ 
+    width: 120px;
+    padding: 10px;
+    border-radius: 40px;
+    background-color: #ffe208;
+    border: none;
+    color: rgb(0, 0, 0);
+    font-size: 15px;
 }
 
+.submenu_2:hover{
+    background-color:#1cc4f8;
+    transition:all 0.3s ease;
+    color: white;
+}
+/* slaider */
 
-/* ===== CONFIRMAR ===== */
+.slide-box{
+    width: 1280px;
+    height: auto;
+    margin: 50px auto 0;
+    overflow: hidden;
+    position: center;
 
-function confirmarUbicacion(){
 
-if(ubicacionSeleccionada===""){
-alert("Selecciona un punto en el mapa, busca dirección o usa GPS");
-return;
 }
 
-ubicacionCliente = ubicacionSeleccionada;
+.slide-box ul{
+    display: flex;
+    padding: 0;
+    width: 400%;
+    animation: slide 20s infinite alternate ease-in-out;
 
-alert("Ubicación guardada correctamente");
-
-cerrarMapa();
+}
+.slide-box li{
+   width: 100%;
+   list-style: none;
+   position: relative;
 }
 
-function generarNumeroPedido(){
-return Math.floor(1000 + Math.random() * 9000);
+.texto{
+    position: absolute;
+    text-align: center;
+    padding: 0 250px;
+    top: 250px;
+    color: whitesmoke;
+}
+
+.slide-box img{
+   width: 100%;
+   height: 500px;
+}
+@keyframes slide{
+    0%{margin-left: 0;}
+    20%{margin-left: 0;}
+
+    25%{margin-left: -100%;}
+    45%{margin-left: -100%;}
+
+    50%{margin-left: -200%;}
+    70%{margin-left: -100%;}
+
+    75%{margin-left: -300%;}
+    100%{margin-left: -300%;}
+
+}
+
+/* productos y tarjetas*/
+
+.productos{
+display:grid;
+grid-template-columns:repeat(5, 260px);
+gap:30px;
+padding:40px 0;
+justify-content:center;
+max-width:1100px;
+margin:auto;
+}
+
+/* Responsive */
+@media(max-width:1000px){
+.productos{
+grid-template-columns:repeat(2, 240px);
+}
+}
+
+@media(max-width:550px){
+.productos{
+grid-template-columns:repeat(1, 240px);
+}
+}
+
+.card{
+margin:5px;
+background:white;
+padding:20px;
+border-radius:12px;
+text-align:center;
+width:240px;
+height:380px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* IMAGEN */
+.card img{
+width:100%;
+height:140px;
+object-fit:contain;
+margin-bottom:10px;
+}
+
+/* TITULO */
+.card h3{
+min-height:45px;
+margin:5px 0;
+}
+
+/* DESCRIPCION */
+.card p{
+min-height:40px;
+font-size:14px;
+color:#444;
+margin:5px 0;
+}
+
+/* PRECIO */
+.card strong{
+font-size:18px;
+margin-top:5px;
+}
+
+.btAgregar{
+    background-color: #ffe208;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    font-size: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.btAgregar:hover{
+    background-color:#1cc4f8;
+    transition:all 0.3s ease;
+    color: white;
+}
+
+.btmas-meno{
+    padding:3px 5px; 
+    cursor:pointer; 
+    border-radius: 50%; 
+    border: none; 
+    background-color: #ffe208 ;
+}
+.btmas-meno:hover{
+    background-color:#fffb00;
+    transition:all 0.3s ease;
+    color: white;
+}
+
+/* pantalla trasparente donde sale el pedido*/
+/* Fondo oscuro con blur */
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+backdrop-filter:blur(5px);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:9999;
+animation:fadeIn 0.3s ease;
+}
+
+/* Animación de fondo */
+@keyframes fadeIn{
+from{opacity:0;}
+to{opacity:1;}
+}
+
+/* Caja del modal */
+.modalContenido{
+background:white;
+padding:30px;
+width:90%;
+max-width:420px;
+border-radius:20px;
+max-height:90vh;
+overflow:auto;
+position:relative;
+box-shadow:0 15px 40px rgba(0,0,0,0.3);
+animation:slideUp 0.4s ease;
+}
+
+/* Animación de entrada */
+@keyframes slideUp{
+from{
+opacity:0;
+transform:translateY(40px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* Botón cerrar moderno */
+.cerrar{
+position:absolute;
+right:20px;
+top:15px;
+font-size:22px;
+cursor:pointer;
+color:#888;
+transition:0.3s;
+}
+
+.cerrar:hover{
+color:#ff4d4d;
+transform:rotate(90deg);
+}
+
+/* Inputs modernos */
+
+input,select{
+width:100%;
+height:45px;              /* 🔥 fuerza misma altura */
+padding:0 15px;           /* mismo espacio interno */
+margin-top:12px;
+border-radius:12px;
+border:1px solid #ddd;
+outline:none;
+font-size:15px;
+transition:0.3s;
+background:#f9f9f9;
+box-sizing:border-box;    /* 🔥 MUY IMPORTANTE */
+}
+input:focus,select:focus{
+border-color:#25D366;
+background:white;
+box-shadow:0 0 10px rgba(37,211,102,0.3);
 }
 
 
-/* WHATSAPP CORREGIDO */
-function enviarPedido(){
-
-if(carrito.length===0){
-alert("Carrito vacío");
-return;
+/* Botón WhatsApp moderno */
+.btnWhats{
+background:linear-gradient(45deg,#25D366,#1ebe5d);
+color:white;
+width:100%;
+padding:14px;
+margin-top:20px;
+border:none;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+box-shadow:0 6px 20px rgba(37,211,102,0.4);
 }
 
-let numeroPedido = generarNumeroPedido();
-
-let nombre=document.getElementById("nombre").value;
-let tel=document.getElementById("telefono").value;
-let envio=parseFloat(document.getElementById("envio").value||0);
-let ubicacion=document.getElementById("ubicasion-des").value.trim();
-let pago=document.getElementById("pago").value;
-
-/* VALIDACION INTELIGENTE */
-if(ubicacionCliente==="" && ubicacion===""){
-alert("Debes capturar la ubicación o escribir una descripción.");
-return;
+.btnWhats:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 25px rgba(37,211,102,0.6);
 }
 
-let mensaje="◉NUEVO PEDIDO\n";
-mensaje+=`Pedido #${numeroPedido}\n\n`;
+.btnWhats:active{
+transform:scale(0.97);
+}
+.caturar-bt{
+    background:linear-gradient(45deg,#f42505d7,#fa1d09);
+color:white;
+width:100%;
+padding:14px;
+margin-top:20px;
+border:none;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+box-shadow:0 6px 20px rgba(253, 45, 8, 0.4);
 
-mensaje+=`Cliente: ${nombre}\n`;
-mensaje+=`Teléfono: ${tel}\n\n`;
-
-if(ubicacionCliente!==""){
-mensaje+=`Ubicación GPS: ${ubicacionCliente}\n\n`;
 }
 
-if(ubicacion!==""){
-mensaje+=`Ubicación Descripción: ${ubicacion}\n\n`;
+.caturar-bt:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 25px rgba(251, 8, 8, 0.6);
 }
 
-mensaje+="Productos:\n";
-
-let subtotal=0;
-
-carrito.forEach(p=>{
-mensaje+=`${p.nombre} x${p.cantidad} = $${(p.precio*p.cantidad).toFixed(2)}\n`;
-subtotal+=p.precio*p.cantidad;
-});
-
-let total=subtotal+envio;
-
-mensaje+=`\nEnvío: $${envio.toFixed(2)}`;
-mensaje+=`\nPago: ${pago}`;
-mensaje+=`\nTotal: $${total.toFixed(2)}`;
-
-let url=`https://wa.me/50762980868?text=${encodeURIComponent(mensaje)}`;
-window.open(url);
+.caturar-bt:active{
+transform:scale(0.97);
 }
 
+
+.toast{
+position:fixed;
+top:80px; /* ajusta según la altura de tu header */
+left:50%;
+transform:translateX(-50%);
+background:#0cda3c;
+color:white;
+padding:15px 25px;
+border-radius:10px;
+font-weight:bold;
+display:none;
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+overflow:hidden;
+z-index:9999;
+animation:aparecer 0.3s ease;
+}
+
+/* Animación de entrada */
+@keyframes aparecer{
+from{
+opacity:0;
+transform:translateX(-50%) translateY(-20px);
+}
+to{
+opacity:1;
+transform:translateX(-50%) translateY(0);
+}
+}
+
+/* Barra que se va reduciendo */
+.toast::after{
+content:"";
+position:absolute;
+bottom:0;
+left:0;
+height:4px;
+width:100%;
+background:rgba(255,255,255,0.7);
+animation:barra 2s linear forwards;
+}
+
+@keyframes barra{
+from{ width:100%; }
+to{ width:0%; }
+}
+
+
+.Barra-inferio{
+height: 500px;
+background: rgba(255, 0, 0, 0.8);
+z-index:1000;
+transition:0.3s;
+top:0;
+
+}
+
+.contenedor{
+    max-width: 1000px; /* controla ancho */
+    margin: auto; /* centra */
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+/* COLUMNAS */
+.columna{
+    flex: 1;
+}
+/* LINEAS DIVISORAS */
+.columna:not(:last-child){
+    border-right: 2px solid red;
+    padding-right: 20px;
+}
+.Col-h2-p{
+    color: rgb(247, 247, 247);
+    margin-top: 50px;
+
+}
+.p-c{
+    color: rgb(247, 247, 247);
+    text-decoration: none;
+    cursor: pointer;
+  transition: 0.3s;
+
+}
+
+.p-c:hover{
+    color: #f4c542; /* color cuando pasas el mouse */
+  text-decoration: underline;
+
+}
+
+
+
+
+hr{
+    width: 1390px;
+border:none;
+height:2px;
+background:#ccc;
+margin:20px auto;
+}
+.derechos{
+    color: #b0b0b0;
+    text-align: center;
+    font-size: 15px;
+    font-family:sans-serif;
+}
+
+.contenedor-principal{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:40px;
+    padding:40px;
+    flex-wrap:wrap;
+}
+
+/* Imagen izquierda */
+.imagen-telefono img{
+width:400px;
+height:800px;
+object-fit:cover;
+
+}
+
+/* Texto derecha */
+.info-telefono{
+    max-width:400px;
+}
+
+.titulo-telefono{
+    font-size:28px;
+    margin-bottom:15px;
+}
+
+/* Botón rojo */
+.boton-rojo{
+    margin-top:15px;
+    padding:12px 60px;
+    background:red;
+    color:white;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.boton-rojo:hover{
+    background:#1cc4f8;
+    color: white;
+}
+
+/* 📱 Responsive celular */
+@media (max-width:768px){
+
+    .contenedor-principal{
+        flex-direction:column;
+        text-align:center;
+    }
+
+}
+/* stilos de fieles */
+.fieles-p{
+    text-align:justify;
+    padding:10px;
+    letter-spacing: 1px;
+}
+
+.in-files{
+    height: 40px;
+    border-radius: 10px;
+    border: none
+
+
+     
+
+}
+/* Buscador */
+#buscador{
+width:80%;
+max-width:400px;
+padding:14px 25px;
+border-radius:50px;
+border:2px solid transparent;
+font-size:16px;
+background:linear-gradient(white, white) padding-box,
+linear-gradient(45deg,#00c6ff,#0072ff) border-box;
+outline:none;
+transition:0.4s;
+}
+
+#buscador:focus{
+transform:scale(1.05);
+box-shadow:0 8px 25px rgba(0,114,255,0.3);
+}
+
+/* Contenedor de cada producto (tu <p>) */
+#listaCarrito p{
+display:flex;
+align-items:center;
+gap:12px;
+background:#f9f9f9;
+padding:12px 15px;
+border-radius:15px;
+margin-bottom:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+font-weight:500;
+flex-wrap:wrap;
+}
+
+/* Hace que el nombre ocupe el espacio disponible */
+#listaCarrito p::first-line{
+font-weight:bold;
+}
+
+/* Empuja el precio hacia la derecha */
+#listaCarrito p span,
+#listaCarrito p{
+flex:1;
+}
+
+/* Botones + y - (mantengo tu diseño pero más compacto) */
+.btmasMenos-pantalla{
+width:34px;
+height:34px;
+border:none;
+border-radius:50%;
+background:#f1f1f1;
+color:#333;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:all 0.2s ease;
+}
+
+/* Hover */
+.btmasMenos-pantalla:hover{
+background:#ffe208;
+color:white;
+box-shadow:0 5px 15px #f8e76a;
+transform:translateY(-2px);
+}
+
+/* Click */
+.btmasMenos-pantalla:active{
+transform:scale(0.9);
+box-shadow:none;
+}
+.bt-eliminar{
+width:34px;
+height:34px;
+border:none;
+border-radius:50%;
+background:#ffe5e5;
+color:#cc0000;
+font-size:16px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:all 0.2s ease;
+}
+
+/* Hover */
+.bt-eliminar:hover{
+background:#ff4d4d;
+color:white;
+box-shadow:0 5px 15px rgba(255,0,0,0.4);
+transform:translateY(-2px);
+}
+
+/* Click */
+.bt-eliminar:active{
+transform:scale(0.9);
+box-shadow:none;
+}
+
+.label-selector{
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+
+}
+
+/* Overlay cerrado */
+#overlay-cerrado {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    backdrop-filter: blur(8px);
+    background: rgba(0,0,0,0.6);
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.mensaje-cerrado {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    animation: fadeIn 0.4s ease;
+}
+
+.mensaje-cerrado h2 {
+    color: red;
+}
+
+#contador {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.horario {
+    font-size: 14px;
+    color: #555;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: scale(0.9);}
+    to {opacity: 1; transform: scale(1);}
+}
