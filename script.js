@@ -14,7 +14,6 @@ const productos = [
 {nombre:"Smirnoff Manzana",precio:7.50,categoria:"cerveza",img:"img/cervesas/monzana.webp",desc:" 6 unidades de lata de 355ml."},
 {nombre:"1/4 de seco",precio:2.75,categoria:"licor",img:"img/licores/seco.jpg",desc:"Cuarto de seco Herrerano 250ml."},
 {nombre:"1/2 de Ron Abuelo",precio:5.50,categoria:"licor",img:"img/licores/botellea-ron.png",desc:"Media de ron abuelo de 350ml."},
-
 ];
 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
@@ -35,7 +34,6 @@ const cont = document.getElementById("productos");
 cont.innerHTML="";
 
 lista.forEach((p)=>{
-
 let i = productos.findIndex(prod=>prod.nombre===p.nombre);
 
 cont.innerHTML+=`
@@ -48,7 +46,7 @@ cont.innerHTML+=`
 <div class="cantidad">
 <button class="btmas-meno" onclick="cambiarCantidad(${i},-1)">➖</button>
 <span id="cant-${i}">${cantidades[i]}</span>
-<button  class="btmas-meno" onclick="cambiarCantidad(${i},1)">➕</button>
+<button class="btmas-meno" onclick="cambiarCantidad(${i},1)">➕</button>
 </div>
 
 <button class="btAgregar" onclick="agregar(${i})">Agregar</button>
@@ -64,10 +62,8 @@ document.getElementById("cant-"+i).innerText=cantidades[i];
 }
 
 function agregar(i){
-
 let p = productos[i];
 let cant = cantidades[i];
-
 let ex = carrito.find(x=>x.nombre===p.nombre);
 
 if(ex){
@@ -94,13 +90,10 @@ mostrarCarrito();
 }
 
 function cambiarCarrito(index,v){
-
 carrito[index].cantidad+=v;
-
 if(carrito[index].cantidad<=0){
 carrito.splice(index,1);
 }
-
 guardar();
 mostrarCarrito();
 }
@@ -111,17 +104,12 @@ mostrarProductos(lista);
 }
 
 function buscarProducto(){
-
 let texto = document.getElementById("buscador").value.toLowerCase();
-
 let filtrados = productos.filter(p =>
 p.nombre.toLowerCase().includes(texto)
 );
-
 mostrarProductos(filtrados);
-
 }
-
 
 mostrarProductos(productos);
 
@@ -151,7 +139,6 @@ let envio=parseFloat(document.getElementById("envio").value||0);
 let subtotal=0;
 
 carrito.forEach((p,index)=>{
-
 subtotal+=p.precio*p.cantidad;
 
 div.innerHTML+=`
@@ -172,21 +159,154 @@ document.getElementById("btnEnviar").innerText=
 `Enviar WhatsApp $${total.toFixed(2)}`;
 }
 
-/* UBICACION */
-function obtenerUbicacion(){
+/* UBICACION CORREGIDA */
+/* ========================= */
+/* ====== MAPA PRO ========= */
+/* ========================= */
+
+let map;
+let marker;
+let ubicacionSeleccionada = "";
+
+function abrirMapa(){
+
+// 🔥 Cierra carrito si está abierto
+cerrarCarrito();
+
+document.getElementById("modalMapa").style.display="flex";
+
+setTimeout(()=>{
+
+// 🔥 Evita que se cree varias veces
+if(!map){
+
+map = L.map('map').setView([7.9819, -80.4290], 15); // Chitré
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+maxZoom: 19,
+}).addTo(map);
+
+// 🔥 Click manual en mapa
+map.on('click', function(e){
+
+if(marker){
+map.removeLayer(marker);
+}
+
+marker = L.marker(e.latlng).addTo(map);
+
+ubicacionSeleccionada =
+`https://maps.google.com/?q=${e.latlng.lat},${e.latlng.lng}`;
+
+});
+
+}
+
+map.invalidateSize();
+
+},200);
+
+}
+
+function cerrarMapa(){
+document.getElementById("modalMapa").style.display="none";
+}
+
+
+/* ===== BUSCADOR REAL ===== */
+
+function buscarDireccion(){
+
+let direccion =
+document.getElementById("buscarLugar").value;
+
+if(direccion.trim()===""){
+alert("Escribe una dirección");
+return;
+}
+
+fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${direccion}`)
+.then(res=>res.json())
+.then(data=>{
+
+if(data.length===0){
+alert("No se encontró la dirección");
+return;
+}
+
+let lat = data[0].lat;
+let lon = data[0].lon;
+
+map.setView([lat, lon], 16);
+
+if(marker){
+map.removeLayer(marker);
+}
+
+marker = L.marker([lat, lon]).addTo(map);
+
+ubicacionSeleccionada =
+`https://maps.google.com/?q=${lat},${lon}`;
+
+});
+
+}
+
+
+/* ===== BOTON GPS DENTRO DEL MAPA ===== */
+
+function usarGPS(){
 
 navigator.geolocation.getCurrentPosition(
 pos=>{
-let lat=pos.coords.latitude;
-let lon=pos.coords.longitude;
-ubicacionCliente=`https://maps.google.com/?q=${lat},${lon}`;
-alert("Ubicación capturada");
-},
-()=> alert("Debes permitir el GPS")
-);
+
+let lat = pos.coords.latitude;
+let lon = pos.coords.longitude;
+
+map.setView([lat, lon], 16);
+
+if(marker){
+map.removeLayer(marker);
 }
 
-/* WHATSAPP */
+marker = L.marker([lat, lon]).addTo(map);
+
+ubicacionSeleccionada =
+`https://maps.google.com/?q=${lat},${lon}`;
+
+alert("Ubicación GPS detectada");
+
+},
+()=>{
+alert("No se pudo obtener el GPS");
+}
+);
+
+}
+
+
+/* ===== CONFIRMAR ===== */
+
+function confirmarUbicacion(){
+
+if(ubicacionSeleccionada===""){
+alert("Selecciona un punto en el mapa, busca dirección o usa GPS");
+return;
+}
+
+ubicacionCliente = ubicacionSeleccionada;
+
+alert("Ubicación guardada correctamente");
+
+cerrarMapa();
+}
+
+function generarNumeroPedido(){
+return Math.floor(1000 + Math.random() * 9000);
+}
+
+
+/* WHATSAPP CORREGIDO */
 function enviarPedido(){
 
 if(carrito.length===0){
@@ -194,23 +314,33 @@ alert("Carrito vacío");
 return;
 }
 
-if(ubicacionCliente===""){
-alert("Captura la ubicación primero");
-return;
-}
+let numeroPedido = generarNumeroPedido();
 
 let nombre=document.getElementById("nombre").value;
 let tel=document.getElementById("telefono").value;
-let envio=parseFloat(document.getElementById("envio").value);
-let ubicacion=parseFloat(document.getElementById("ubicasion-des").value);
+let envio=parseFloat(document.getElementById("envio").value||0);
+let ubicacion=document.getElementById("ubicasion-des").value.trim();
 let pago=document.getElementById("pago").value;
 
-let mensaje="🛒 NUEVO PEDIDO\n\n";
+/* VALIDACION INTELIGENTE */
+if(ubicacionCliente==="" && ubicacion===""){
+alert("Debes capturar la ubicación o escribir una descripción.");
+return;
+}
+
+let mensaje="◉NUEVO PEDIDO\n";
+mensaje+=`Pedido #${numeroPedido}\n\n`;
 
 mensaje+=`Cliente: ${nombre}\n`;
-mensaje+=`Teléfono: ${tel}\n`;
-mensaje+=`Ubicación: ${ubicacionCliente}\n\n`;
-mensaje+=`Ubicación: ${ubicacion}\n\n`;
+mensaje+=`Teléfono: ${tel}\n\n`;
+
+if(ubicacionCliente!==""){
+mensaje+=`Ubicación GPS: ${ubicacionCliente}\n\n`;
+}
+
+if(ubicacion!==""){
+mensaje+=`Ubicación Descripción: ${ubicacion}\n\n`;
+}
 
 mensaje+="Productos:\n";
 
@@ -223,7 +353,7 @@ subtotal+=p.precio*p.cantidad;
 
 let total=subtotal+envio;
 
-mensaje+=`\nEnvío: $${envio}`;
+mensaje+=`\nEnvío: $${envio.toFixed(2)}`;
 mensaje+=`\nPago: ${pago}`;
 mensaje+=`\nTotal: $${total.toFixed(2)}`;
 
