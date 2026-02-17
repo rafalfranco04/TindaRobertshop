@@ -7,6 +7,9 @@
 
 <link rel="stylesheet" href="style.css">
     <link rel="icon" href="img/favicon.jpeg" type="image/png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 </head>
 
 <body>
@@ -79,6 +82,9 @@
 <input id="nombre" placeholder="Nombre">
 <input id="telefono" placeholder="Teléfono">
 
+
+<label class="label-selector" for="envio">Envio:</label>
+
 <select id="envio" onchange="mostrarCarrito()">
 <option value="2">La Arena, Via pese centro - $2</option>
 <option value="3">Chitré, Monagrillo, llano bonito - $3</option>
@@ -87,7 +93,12 @@
 </select>
 <input id="ubicasion-des" placeholder="Describe tu Ubicación">
 
-<button class="caturar-bt" onclick="obtenerUbicacion()">Capturar Ubicación</button>
+<button class="caturar-bt" onclick="abrirMapa()">Seleccionar en Mapa</button>
+
+
+
+<label class="label-selector" for="envio">Pago:</label>
+
 
 <select id="pago">
 <option>Yappy</option>
@@ -169,8 +180,64 @@ Enviar WhatsApp
 
 <h3 class="derechos" >© 2026 Robert Shop. Todos los derechos reservados.</h3>
 <h3 class="derechos">Hecho por @RafaFranco</h3>
+<!-- Pantalla cuando está cerrado -->
+<div id="overlay-cerrado">
+    <div class="mensaje-cerrado">
+        <h2>NO DISPONIBLE 😔</h2>
+        <p>Regresamos en: 😎</p>
+        <div id="contador"></div>
+
+        <p class="horario">
+            Horario:<br>
+            Lunes a Jueves y Domingo: 8:00am - 1:00am<br>
+            Viernes y Sábado: 8:00am - 3:00am
+        </p>
+    </div>
+</div>
+
+<div id="modalMapa"
+style="display:none; position:fixed; inset:0;
+background:rgba(0,0,0,0.6);
+justify-content:center; align-items:center;
+z-index:9999;">
+
+<div style="width:90%; max-width:500px; height:535px;
+background:#fff; border-radius:10px;
+padding:10px; position:relative;">
+
+<button onclick="cerrarMapa()"
+style="position:absolute; right:10px; top:10px;">✖</button>
+
+<input type="text" id="buscarLugar"
+placeholder="Buscar dirección..."
+style="width:100%; padding:8px; margin-bottom:5px;" />
+
+<button onclick="buscarDireccion()"
+style="width:100%; margin-bottom:5px; padding:8px; border-radius:5px;
+background-color: #007bff; color: #fff; border: none;">
+Buscar
+</button>
+
+<div id="map" style="height:350px;"></div>
+
+<button onclick="usarGPS()"
+style="width:100%; margin-top:5px; padding:10px;
+background:#007bff; color:white; border:none; border-radius: 5px;">
+Usar mi GPS
+</button>
+
+<button onclick="confirmarUbicacion()"
+style="width:100%; margin-top:5px; padding:10px;
+background:green; color:white; border:none; border-radius: 5px; ">
+Confirmar ubicación
+</button>
+
+</div>
+</div>
+
 
 <script src="script.js"></script>
+<script src="horario.js"></script>
 
 </body>
 </html>
