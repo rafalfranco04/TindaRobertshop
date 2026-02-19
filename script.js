@@ -19,6 +19,10 @@ const productos = [
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 let ubicacionCliente = "";
 let cantidades = new Array(productos.length).fill(1);
+/* ===== LOAD MORE ===== */
+let productosMostrados = 10;
+let listaActual = productos;
+
 
 /* TOAST */
 function mostrarToast(){
@@ -30,10 +34,14 @@ setTimeout(()=> t.style.display="none",1500);
 /* PRODUCTOS */
 function mostrarProductos(lista){
 
+listaActual = lista; // guardamos la lista actual
+
 const cont = document.getElementById("productos");
 cont.innerHTML="";
 
-lista.forEach((p)=>{
+const visibles = lista.slice(0, productosMostrados);
+
+visibles.forEach((p)=>{
 let i = productos.findIndex(prod=>prod.nombre===p.nombre);
 
 cont.innerHTML+=`
@@ -53,6 +61,8 @@ cont.innerHTML+=`
 </div>
 `;
 });
+
+controlarBoton();
 }
 
 function cambiarCantidad(i,v){
@@ -99,17 +109,39 @@ mostrarCarrito();
 }
 
 function filtrar(cat){
+productosMostrados = 10;
 let lista = productos.filter(p=>p.categoria===cat);
 mostrarProductos(lista);
 }
 
+
 function buscarProducto(){
+productosMostrados = 10;
 let texto = document.getElementById("buscador").value.toLowerCase();
 let filtrados = productos.filter(p =>
 p.nombre.toLowerCase().includes(texto)
 );
 mostrarProductos(filtrados);
 }
+
+
+function cargarMas(){
+productosMostrados += 10;
+mostrarProductos(listaActual);
+}
+
+function controlarBoton(){
+const boton = document.getElementById("btnCargarMas");
+
+if(!boton) return;
+
+if(productosMostrados >= listaActual.length){
+boton.style.display="none";
+}else{
+boton.style.display="block";
+}
+}
+
 
 mostrarProductos(productos);
 
