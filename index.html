@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="style.css">
     <link rel="icon" href="img/favicon.jpeg" type="image/png">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 </head>
@@ -19,25 +21,26 @@
         <img src="img/favicon.jpeg" alt="Logo Robert Shop">
         <span>Robert Shop</span>
     </div>
-    
-</div>
+
+    <div class="carritoIcono" onclick="abrirCarrito()">
+        <img src="img/carrito.png" alt="Carrito">
+    </div>
+</header>
 
 <div class="contenedor-buscador">
-<input type="text" id="buscador" placeholder="Buscar producto..." onkeyup="buscarProducto()">
+    <input type="text" id="buscador" 
+    placeholder="Buscar producto..." 
+    onkeyup="buscarProducto()">
 </div>
-
 
 <div class="submenu">
-<button class="submenu_2" onclick="filtrar('cerveza')">Cervezas</button>
-<button class="submenu_2" onclick="filtrar('licor')">Licores</button>
-<button class="submenu_2" onclick="filtrar('snack')">Snacks</button>
-<button class="submenu_2" onclick="filtrar('hielo')">Hielo</button>
-<button class="submenu_2" onclick="mostrarProductos(productos)">Todos</button>
+    <button class="submenu_2" onclick="filtrar('cerveza')">Cervezas</button>
+    <button class="submenu_2" onclick="filtrar('licor')">Licores</button>
+    <button class="submenu_2" onclick="filtrar('snack')">Snacks</button>
+    <button class="submenu_2" onclick="filtrar('hielo')">Hielo</button>
+    <button class="submenu_2" onclick="mostrarProductos(productos)">Todos</button>
 </div>
 
-
-<div class="carritoIcono" onclick="abrirCarrito()">
-    <img src="img/carrito.png" alt="Carrito">
 
 </header>
 
@@ -65,6 +68,14 @@
 </div>
 
 <div class="productos" id="productos"></div>
+
+<div class="contenedor-cargar">
+<button id="btnCargarMas" class="btn-cargar" onclick="cargarMas()">
+Cargar más...
+</button>
+</div>
+
+
 
 <div class="toast" id="toast">Producto agregado</div>
 
@@ -183,15 +194,16 @@ Enviar WhatsApp
 <!-- Pantalla cuando está cerrado -->
 <div id="overlay-cerrado">
     <div class="mensaje-cerrado">
-        <h2>NO DISPONIBLE 😔</h2>
-        <p>Regresamos en: 😎</p>
-        <div id="contador"></div>
-
-        <p class="horario">
-            Horario:<br>
+        <h2>⏰ <br> Horario de Sevicio</h2>
+        <p>El horario de antencion a traves
+            de Plataforma <br> Robert Shop es:
+        </p>
+          <p class="horario">
             Lunes a Jueves y Domingo: 8:00am - 1:00am<br>
             Viernes y Sábado: 8:00am - 3:00am
         </p>
+        <p>Regresamos en: 😎</p>
+        <div id="contador"></div>
     </div>
 </div>
 
@@ -206,7 +218,8 @@ background:#fff; border-radius:10px;
 padding:10px; position:relative;">
 
 <button onclick="cerrarMapa()"
-style="position:absolute; right:10px; top:10px;">✖</button>
+style="position:absolute; right:10px; top:10px; background-color:rgba(255, 0, 0, 0.8);
+ color: #fff; border: none; border-radius: 10px; font-size: 20px;" >+</button>
 
 <input type="text" id="buscarLugar"
 placeholder="Buscar dirección..."
@@ -214,7 +227,7 @@ style="width:100%; padding:8px; margin-bottom:5px;" />
 
 <button onclick="buscarDireccion()"
 style="width:100%; margin-bottom:5px; padding:8px; border-radius:5px;
-background-color: #007bff; color: #fff; border: none;">
+background-color:rgba(255, 0, 0, 0.8); color: #fff; border: none;">
 Buscar
 </button>
 
@@ -228,7 +241,7 @@ Usar mi GPS
 
 <button onclick="confirmarUbicacion()"
 style="width:100%; margin-top:5px; padding:10px;
-background:green; color:white; border:none; border-radius: 5px; ">
+background:rgba(255, 0, 0, 0.8); color:white; border:none; border-radius: 5px; ">
 Confirmar ubicación
 </button>
 
@@ -241,4 +254,3 @@ Confirmar ubicación
 
 </body>
 </html>
-
