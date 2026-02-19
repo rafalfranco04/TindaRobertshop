@@ -33,6 +33,11 @@ top:0;
     object-fit:cover;
 }
 
+.contenedor-buscador{
+    display:flex;
+    justify-content:center;
+    margin-top:10px;
+}
 
 .menu a{
 color:rgb(255, 255, 255);
@@ -44,8 +49,9 @@ font-weight:bold;
 .carritoIcono img{
 width:30px;
 cursor:pointer;
-margin-right: 600px;
+margin-right: 20px;
 }
+
 
 
 /* Submenu */
@@ -538,7 +544,7 @@ object-fit:cover;
 }
 /* Buscador */
 #buscador{
-width:80%;
+width:350px;
 max-width:400px;
 padding:14px 25px;
 border-radius:50px;
@@ -691,4 +697,134 @@ box-shadow:none;
 @keyframes fadeIn {
     from {opacity: 0; transform: scale(0.9);}
     to {opacity: 1; transform: scale(1);}
+}
+
+/* BOTON CARGAR MAS */
+
+.btn-cargar{
+padding:14px 35px;
+border-radius:50px;
+font-size:16px;
+cursor:pointer;
+border:2px solid transparent;
+background:linear-gradient(white, white) padding-box,
+linear-gradient(45deg,#00c6ff,#0072ff) border-box;
+transition:0.4s;
+}
+
+.btn-cargar:hover{
+transform:scale(1.05);
+box-shadow:0 8px 25px rgba(0,114,255,0.3);
+}
+
+.btn-cargar:focus{
+outline:none;
+transform:scale(1.08);
+box-shadow:0 10px 30px rgba(0,114,255,0.5);
+}
+/* CONTENEDOR BOTON */
+
+.contenedor-cargar{
+display:flex;
+justify-content:center;
+align-items:center;
+margin:40px 0;
+}
+
+/* ========================= */
+/* 📱 RESPONSIVE LIMPIO */
+/* ========================= */
+@media (max-width:768px){
+
+/* HEADER */
+header{
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 15px;
+}
+
+/* Logo */
+.logo{
+    margin-left:0;
+    font-size:18px;
+}
+
+/* Carrito */
+.carritoIcono img{
+    margin-right:0;
+}
+
+/* Contenedor buscador */
+.contenedor-buscador{
+    display:flex;
+    justify-content:center;
+    padding:0 10px;
+}
+
+/* Buscador ancho completo */
+#buscador{
+    width:100%;
+    margin:10px 0;
+    display:block;
+}
+
+/* Submenu scroll horizontal */
+.submenu{
+    display:flex;
+    overflow-x:auto;
+    scroll-behavior:smooth;
+    gap:12px;
+    padding:10px 15px;
+    justify-content:flex-start;
+}
+
+.submenu::-webkit-scrollbar{
+    display:none;
+}
+
+.submenu_2{
+    flex:0 0 auto;
+    white-space:nowrap;
+    padding:8px 18px;
+    border-radius:50px;
+    font-size:14px;
+}
+
+/* Slider */
+.slide-box{
+    width:100%;
+}
+
+.slide-box img{
+    height:250px;
+}
+
+.texto{
+    padding:0 20px;
+    top:100px;
+    font-size:14px;
+}
+
+/* Productos */
+.productos{
+    grid-template-columns:1fr;
+    padding:20px 10px;
+}
+
+.card{
+    width:100%;
+    height:auto;
+}
+
+/* Footer */
+.contenedor{
+    flex-direction:column;
+    text-align:center;
+}
+
+hr{
+    width:90%;
+}
+
 }
